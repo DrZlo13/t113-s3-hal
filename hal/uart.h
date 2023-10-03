@@ -40,15 +40,6 @@ void hal_uart_enable_interrupt(UART_TypeDef* uart);
 
 void hal_uart_disable_interrupt(UART_TypeDef* uart);
 
-// 0000: modem status
-// 0001: no interrupt pending
-// 0010: THR empty
-// 0011: RS485 Interrupt
-// 0100: received data available
-// 0110: receiver line status
-// 0111: busy detect
-// 1100: character timeout
-
 typedef enum {
     UartInterruptModemStatus = 0b0000,
     UartInterruptNoInterrupt = 0b0001,
