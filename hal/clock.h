@@ -13,9 +13,10 @@ typedef enum {
     ClockSystemUart3,
     ClockSystemUart4,
     ClockSystemUart5,
-} ClockTarget;
+    ClockSystemPWM,
+} ClockSystem;
 
-void hal_clock_enable(ClockTarget target);
+void hal_clock_enable(ClockSystem target);
 
 #ifdef __cplusplus
 }
