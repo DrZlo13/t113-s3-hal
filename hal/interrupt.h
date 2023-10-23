@@ -99,7 +99,46 @@ typedef enum {
     InterruptTimer0 = 91,
     InterruptTimer1 = 92,
     /* interrupt 93 */
-    // TODO page 222
+    InterruptTPADC = 94,
+    InterruptWatchDog = 95,
+    InterruptIOMMU = 96,
+    /* interrupt 97 */
+    InterruptVE = 98,
+    /* interrupt 99 */
+    /* interrupt 100 */
+    InterruptGPIOB_NS = 101,
+    InterruptGPIOB_S = 102,
+    InterruptGPIOC_NS = 103,
+    InterruptGPIOC_S = 104,
+    InterruptGPIOD_NS = 105,
+    InterruptGPIOD_S = 106,
+    InterruptGPIOE_NS = 107,
+    InterruptGPIOE_S = 108,
+    InterruptGPIOF_NS = 109,
+    InterruptGPIOF_S = 110,
+    InterruptGPIOG_NS = 111,
+    InterruptGPIOG_S = 112,
+    /* interrupt 113 */
+    /* interrupt 114 */
+    /* interrupt 115 */
+    /* interrupt 116 */
+    InterruptCPUX_MSGBOX_DSP_W = 117, // CPUX MSGBOX WRITE IRQ for DSP
+    /* interrupt 118 */
+    InterruptDE = 119,
+    InterruptDI = 120,
+    InterruptG2D = 121,
+    InterruptLCD = 122,
+    InterruptTV = 123,
+    InterruptDSI = 124,
+    /* interrupt 125 */
+    InterruptTVE = 126, // CVBS OUT interrupt
+    InterruptCSI_DMA0 = 127,
+    InterruptCSI_DMA1 = 128,
+    /* interrupt 129 */
+    /* interrupt 130 */
+    /* interrupt 131 */
+    InterruptCSI_PARSER0 = 132,
+    // TODO: page 223
 } Interrupt;
 
 #ifdef __cplusplus
