@@ -2,6 +2,10 @@
 #include "../std/common.h"
 #include "../cmsis_t113s3.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum {
     PWMClockDiv1 = 0b0000,
     PWMClockDiv2 = 0b0001,
@@ -44,3 +48,7 @@ uint16_t hal_pwm_counter_get(size_t pwm);
 void hal_pwm_enable(size_t pwm);
 
 void hal_pwm_disable(size_t pwm);
+
+#ifdef __cplusplus
+}
+#endif

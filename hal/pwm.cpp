@@ -1,4 +1,7 @@
 #include "pwm.h"
+#include "regs/pwm.hpp"
+
+#define PWM_CHANNEL_COUNT 8
 
 // Configuring Clock
 // Step 1 PWM gating: When using PWM, write 1 to PCGR[PWMx_CLK_GATING].
@@ -10,23 +13,21 @@
 // Step 5 PWM internal clock configuration: Set PCR[PWM_PRESCAL_K] to select any frequency division
 // coefficient from 1 to 256.
 
-#define PWM_CLK_GATING_OFFSET (0)
-
-void hal_pwm_clock(size_t pwm, PWMClockDiv div, PWMClockSource src, uint8_t prescaler) {
-    //assert(pwm < 8);
+API void hal_pwm_clock(size_t pwm, PWMClockDiv div, PWMClockSource src, uint8_t prescaler) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
     size_t pwm_pair = pwm / 2;
 
     // Enable PWM gating
-    SET_BIT(PWM->PCGR, PWM_CLK_GATING_OFFSET + pwm);
+    pwm::pcgr::clk_gating::write(pwm, true);
 
     // Set PWM clock source
-    PWM->PCCR[pwm_pair] |= ((src & 0b11) << 7);
+    pwm::pccr::clk_src::write(pwm_pair, src);
 
     // Set PWM clock divider
-    PWM->PCCR[pwm_pair] |= ((div & 0b1111) << 0);
+    pwm::pccr::clk_div_m::write(pwm_pair, div);
 
     // Set PWM clock prescaler
-    PWM->CH[pwm].PCR |= prescaler << 0;
+    pwm::pcr::prescal_k::write(pwm, prescaler);
 }
 
 // Configuring PWM
@@ -41,43 +42,44 @@ void hal_pwm_clock(size_t pwm, PWMClockDiv div, PWMClockSource src, uint8_t pres
 // Step 5 Enable PWM: Configure PER to select the corresponding PWM enable bit; when selecting pulse mode,
 // PCR[PWM_PUL_START] needs to be enabled.
 
-void hal_pwm_mode(size_t pwm, PWMMode mode, PWMActive active) {
-    //assert(pwm < 8);
-    PWM->CH[pwm].PCR |= ((mode & 0b1) << 9);
-    PWM->CH[pwm].PCR |= ((active & 0b1) << 8);
+API void hal_pwm_mode(size_t pwm, PWMMode mode, PWMActive active) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    pwm::pcr::mode::write(pwm, mode);
+    pwm::pcr::act_sta::write(pwm, active);
 }
 
-void hal_pwm_period(size_t pwm, uint16_t period) {
-    //assert(pwm < 8);
-    while((PWM->CH[pwm].PCR & (1 << 11)) != 0) {
+API void hal_pwm_period(size_t pwm, uint16_t period) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    while(pwm::pcr::period_rdy::read(pwm) != 0) {
         // Wait for PWM Period Register Ready
     }
-    PWM->CH[pwm].PPR = (PWM->CH[pwm].PPR & 0x0000FFFF) | ((period & 0xFFFF) << 16);
+    pwm::ppr::entire_cycle::write(pwm, period);
 }
 
-void hal_pwm_duty(size_t pwm, uint16_t duty) {
-    //assert(pwm < 8);
-    while((PWM->CH[pwm].PCR & (1 << 11)) != 0) {
+API void hal_pwm_duty(size_t pwm, uint16_t duty) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    while(pwm::pcr::period_rdy::read(pwm) != 0) {
         // Wait for PWM Period Register Ready
     }
-    PWM->CH[pwm].PPR = (PWM->CH[pwm].PPR & 0xFFFF0000) | (duty & 0xFFFF);
+    pwm::ppr::act_cycle::write(pwm, duty);
 }
 
-void hal_pwm_counter(size_t pwm, uint16_t counter) {
-    //assert(pwm < 8);
-    PWM->CH[pwm].PCNTR = (counter & 0xFFFF) << 16;
+API void hal_pwm_counter(size_t pwm, uint16_t counter) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    pwm::pcntr::counter_start::write(pwm, counter);
 }
 
-uint16_t hal_pwm_counter_get(size_t pwm) {
-    return (PWM->CH[pwm].PCNTR) & 0xFFFF;
+API uint16_t hal_pwm_counter_get(size_t pwm) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    return pwm::pcntr::counter_status::read(pwm);
 }
 
-void hal_pwm_enable(size_t pwm) {
-    //assert(pwm < 8);
-    PWM->PER |= 1 << pwm;
+API void hal_pwm_enable(size_t pwm) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    pwm::per::en::write(pwm, 1);
 }
 
-void hal_pwm_disable(size_t pwm) {
-    //assert(pwm < 8);
-    PWM->PER &= ~(1 << pwm);
+API void hal_pwm_disable(size_t pwm) {
+    hal_assert(pwm < PWM_CHANNEL_COUNT);
+    pwm::per::en::write(pwm, 0);
 }

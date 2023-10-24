@@ -12,6 +12,9 @@ include_directories(
 
 file(GLOB_RECURSE SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/std/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/std/*.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
