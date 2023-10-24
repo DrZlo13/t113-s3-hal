@@ -2,6 +2,9 @@
 #include <cstddef>
 #include <cstdint>
 
+// macro for defining constexpr address based on struct and struct member
+#define ADDR(base, type, member) ((base) + offsetof(type, member))
+
 // register
 template <uint32_t address, uint32_t mask, uint32_t offset, class mutability_policy> struct reg {
     static void write(unsigned value) {
